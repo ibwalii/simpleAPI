@@ -40,6 +40,31 @@ def books():
         book_list.append(new_obj)
         return jsonify(book_list)
 
+@app.route('/books/<int:id>', methods = ['GET', 'PUT', 'DELETE'])
+def single_book(id):
+    if request.method == 'GET':
+        for book in book_list:
+            if book['id'] == id:
+                return jsonify(book)
+            pass
+    
+    if request.method == 'PUT':
+        for book in book_list:
+            if book['id']:
+               book['title'] = request.form['title'],
+               book['author'] = request.form['author'],
+               book['language'] = request.form['language']
+               return jsonify(book_list)
+
+    if request.method == 'DELETE':
+        for index, book in book_list:
+            if book['id'] == id:
+                book_list.pop(index)
+                return jsonify(book_list)
+
+    
+
+
 @app.route('/')
 def index():
     return '<h1>Hello </h1>'
