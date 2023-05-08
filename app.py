@@ -79,8 +79,8 @@ def single_book(id):
         return jsonify(updated_book)
 
     if request.method == 'DELETE':
-        sqlQuery = """ DELETE FROM books where id=? """
-        conn.execute(sqlQuery, (id,))
+        sqlQuery = """ DELETE FROM books where id=%s """
+        cursor.execute(sqlQuery, (id,))
         conn.commit()
         return f" DELETED Book with ID: {id} successfully", 200
 
