@@ -57,18 +57,28 @@ def books():
 
 @app.route('/books/<int:id>', methods = ['GET', 'PUT', 'DELETE'])
 def single_book(id):
-    conn = db_connection()
-    cursor = conn.cursor()
     if request.method == 'GET':
-        sqlQuery = """ SELECT * FROM books where ID =%s """
-        cursor.execute(sqlQuery,(id,))
-        row = cursor.fetchall()
-        for book in row:
-            book = book
-        if book is not None:
-            return jsonify(book), 200
+        book = Books.query.get(id)
+        if book is None:
+            return jsonify({'message': 'Book not found'}), 404
         else:
-            return "something went wrong", 404
+            book_data = {
+                'id': book.id,
+                'title': book.title,
+                'author': book.author,
+                'language': book.language
+            }
+        return jsonify(book_data), 200
+        
+        # sqlQuery = """ SELECT * FROM books where ID =%s """
+        # cursor.execute(sqlQuery,(id,))
+        # row = cursor.fetchall()
+        # for book in row:
+        #     book = book
+        # if book is not None:
+        #     return jsonify(book), 200
+        # else:
+        #     return "something went wrong", 404
         
     
     if request.method == 'PUT':
