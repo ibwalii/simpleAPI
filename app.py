@@ -1,8 +1,25 @@
 from flask import Flask, request, jsonify
+from flask_sqlalchemy import SQLAlchemy
+
 import json
 import pymysql
 
 app = Flask(__name__)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root@localhost/simpleCRUD'
+
+# Create a SQLAlchemy object and bind it to the app
+db = SQLAlchemy(app)
+
+# Create a Book model
+class Books(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    author = db.Column(db.String(100))
+    language = db.Column(db.String(50))
+    title = db.Column(db.String(200))
+
+    def __repr__(self):
+        return f'<Book {self.id}>'
 
 def db_connection():
     conn = None
@@ -15,30 +32,42 @@ def db_connection():
         print(e)
     return conn
 
+@app.route('/books', methods=['GET'])
+def get_books():
+    books = Books.query.all()
+    books_list = []
+    for book in books:
+        book_dict = {}
+        book_dict['id'] = book.id
+        book_dict['author'] = book.author
+        book_dict['language'] = book.language
+        book_dict['title'] = book.title
+        books_list.append(book_dict)
+    return jsonify(books_list)
 
-@app.route('/books', methods = ['GET', 'POST'])
-def books():
-    conn = db_connection()
-    cursor = conn.cursor()
+# @app.route('/books', methods = ['GET', 'POST'])
+# def books():
+#     conn = db_connection()
+#     cursor = conn.cursor()
 
-    if request.method == 'GET':
-        cursor.execute("SELECT * FROM books")
-        books = [
-            dict(id = row[0], author = row[1], language = row[2], title = row[3])
-            for row in cursor.fetchall()
-        ]
-        if books is not None:
-            return jsonify(books)
+#     if request.method == 'GET':
+#         cursor.execute("SELECT * FROM books")
+#         books = [
+#             dict(id = row[0], author = row[1], language = row[2], title = row[3])
+#             for row in cursor.fetchall()
+#         ]
+#         if books is not None:
+#             return jsonify(books)
     
-    if request.method == 'POST':
-        new_author = request.form['author']
-        new_lang = request.form['language']
-        new_title = request.form['title']
-        sqlQuery = """ INSERT INTO books(author, language, title)
-                        VALUES(%s, %s, %s)"""
-        cursor.execute(sqlQuery, (new_author, new_lang, new_title))
-        conn.commit()
-        return f"Book with ID: { cursor.lastrowid} added successfully"
+#     if request.method == 'POST':
+#         new_author = request.form['author']
+#         new_lang = request.form['language']
+#         new_title = request.form['title']
+#         sqlQuery = """ INSERT INTO books(author, language, title)
+#                         VALUES(%s, %s, %s)"""
+#         cursor.execute(sqlQuery, (new_author, new_lang, new_title))
+#         conn.commit()
+#         return f"Book with ID: { cursor.lastrowid} added successfully"
 
 @app.route('/books/<int:id>', methods = ['GET', 'PUT', 'DELETE'])
 def single_book(id):
