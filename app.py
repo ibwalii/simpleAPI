@@ -71,31 +71,30 @@ def single_book(id):
         return jsonify(book_data), 200        
     
     if request.method == 'PUT':
-        sqlQuery = """ UPDATE books 
-                        set author= %s, 
-                        language= %s,  
-                        title= %s 
-                        where id= %s """
-        title = request.form['title']
-        author = request.form['author']
-        language = request.form['language']
+        book = Books.query.get(id)
+        if book is None:
+            return jsonify({'message': 'Book not found'}), 404
+        else:
+            book.author = request.form['author']
+            book.language = request.form['language']
+            book.title = request.form['title']
 
-        updated_book = {
-            "id": id,
-            "author": author,
-            "language": language,
-            "title": title
-        }
-        
-        cursor.execute(sqlQuery, (author, language, title, id))
-        conn.commit()
-        
-        return jsonify(updated_book)
+            db.session.commit()
+            book_data = {
+                'id': book.id,
+                'title': book.title,
+                'author': book.author,
+                'language': book.language
+            }
+            return jsonify(book_data), 200        
 
     if request.method == 'DELETE':
-        sqlQuery = """ DELETE FROM books where id=%s """
-        cursor.execute(sqlQuery, (id,))
-        conn.commit()
+        book = Books.query.get(id)
+        if book is None:
+            return jsonify({'message': 'Book not found'})
+        else:
+            db.session.delete(book)
+            db.session.commit()
         return f" DELETED Book with ID: {id} successfully", 200
 
     
