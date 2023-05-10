@@ -32,18 +32,28 @@ def db_connection():
         print(e)
     return conn
 
-@app.route('/books', methods=['GET'])
-def get_books():
-    books = Books.query.all()
-    books_list = []
-    for book in books:
-        book_dict = {}
-        book_dict['id'] = book.id
-        book_dict['author'] = book.author
-        book_dict['language'] = book.language
-        book_dict['title'] = book.title
-        books_list.append(book_dict)
-    return jsonify(books_list)
+@app.route('/books', methods=['GET', 'POST'])
+def books():
+    if request.method == 'GET':
+        books = Books.query.all()
+        books_list = []
+        for book in books:
+            book_dict = {}
+            book_dict['id'] = book.id
+            book_dict['author'] = book.author
+            book_dict['language'] = book.language
+            book_dict['title'] = book.title
+            books_list.append(book_dict)
+        return jsonify(books_list)
+    
+    if request.method == 'POST':
+        new_author = request.form['author']
+        new_lang = request.form['language']
+        new_title = request.form['title']
+        book = Books(title=new_title, author=new_author, language=new_lang)
+        db.session.add(book)
+        db.session.commit()
+        return jsonify({'message': 'Book added successfully'})
 
 # @app.route('/books', methods = ['GET', 'POST'])
 # def books():
