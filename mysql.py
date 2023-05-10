@@ -11,11 +11,18 @@ conn = pymysql.connect(
 cursor = conn.cursor()
 
 
-sqlQuery = """ CREATE TABLE books (
+sqlQuery = """ CREATE TABLE IF NOT EXISTS books (
     id integer PRIMARY KEY AUTO_INCREMENT,
     author text NOT NULL,
     language text NOT NULL,
     title text NOT NULL 
+)
+"""
+cursor.execute(sqlQuery)
+
+sqlQuery = """ CREATE TABLE IF NOT EXISTS authors (
+    id integer PRIMARY KEY AUTO_INCREMENT,
+    author text NOT NULL
 )
 """
 cursor.execute(sqlQuery)
