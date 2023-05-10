@@ -68,18 +68,7 @@ def single_book(id):
                 'author': book.author,
                 'language': book.language
             }
-        return jsonify(book_data), 200
-        
-        # sqlQuery = """ SELECT * FROM books where ID =%s """
-        # cursor.execute(sqlQuery,(id,))
-        # row = cursor.fetchall()
-        # for book in row:
-        #     book = book
-        # if book is not None:
-        #     return jsonify(book), 200
-        # else:
-        #     return "something went wrong", 404
-        
+        return jsonify(book_data), 200        
     
     if request.method == 'PUT':
         sqlQuery = """ UPDATE books 
