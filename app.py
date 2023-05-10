@@ -55,30 +55,6 @@ def books():
         db.session.commit()
         return jsonify({'message': 'Book added successfully'})
 
-# @app.route('/books', methods = ['GET', 'POST'])
-# def books():
-#     conn = db_connection()
-#     cursor = conn.cursor()
-
-#     if request.method == 'GET':
-#         cursor.execute("SELECT * FROM books")
-#         books = [
-#             dict(id = row[0], author = row[1], language = row[2], title = row[3])
-#             for row in cursor.fetchall()
-#         ]
-#         if books is not None:
-#             return jsonify(books)
-    
-#     if request.method == 'POST':
-#         new_author = request.form['author']
-#         new_lang = request.form['language']
-#         new_title = request.form['title']
-#         sqlQuery = """ INSERT INTO books(author, language, title)
-#                         VALUES(%s, %s, %s)"""
-#         cursor.execute(sqlQuery, (new_author, new_lang, new_title))
-#         conn.commit()
-#         return f"Book with ID: { cursor.lastrowid} added successfully"
-
 @app.route('/books/<int:id>', methods = ['GET', 'PUT', 'DELETE'])
 def single_book(id):
     conn = db_connection()
