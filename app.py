@@ -58,7 +58,7 @@ def books():
 @app.route('/books/<int:id>', methods = ['GET', 'PUT', 'DELETE'])
 def single_book(id):
     if request.method == 'GET':
-        book = Books.query.get(id)
+        book = db.session.get(Books, id)
         if book is None:
             return jsonify({'message': 'Book not found'}), 404
         else:
@@ -71,7 +71,7 @@ def single_book(id):
         return jsonify(book_data), 200        
     
     if request.method == 'PUT':
-        book = Books.query.get(id)
+        book = db.session.get(Books, id)
         if book is None:
             return jsonify({'message': 'Book not found'}), 404
         else:
@@ -89,7 +89,7 @@ def single_book(id):
             return jsonify(book_data), 200        
 
     if request.method == 'DELETE':
-        book = Books.query.get(id)
+        book = db.session.get(Books, id)
         if book is None:
             return jsonify({'message': 'Book not found'})
         else:
