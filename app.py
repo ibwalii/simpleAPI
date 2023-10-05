@@ -8,7 +8,7 @@ import sqlite3
 app = Flask(__name__)
 
 # 'sqlite:///books.sqlite' or 'mysql+pymysql://root:root@localhost/simpleCRUD'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///books.sqlite'  
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root@localhost/simpleCRUD' 
 
 # Create a SQLAlchemy object and bind it to the app
 db = SQLAlchemy(app)
