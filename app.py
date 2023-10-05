@@ -3,10 +3,12 @@ from flask_sqlalchemy import SQLAlchemy
 
 import json
 import pymysql
+import sqlite3
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root@localhost/simpleCRUD'
+# 'sqlite:///books.sqlite' or 'mysql+pymysql://root:root@localhost/simpleCRUD'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///books.sqlite'  
 
 # Create a SQLAlchemy object and bind it to the app
 db = SQLAlchemy(app)
@@ -21,14 +23,22 @@ class Books(db.Model):
     def __repr__(self):
         return f'<Book {self.id}>'
 
+# def db_connection():
+#     conn = None
+#     try:
+#         conn = pymysql.connect( host='localhost',
+#                                 user='root',
+#                                 password='root',
+#                                 db='simpleCRUD')
+#     except pymysql.error as e:
+#         print(e)
+#     return conn
+
 def db_connection():
     conn = None
     try:
-        conn = pymysql.connect( host='localhost',
-                                user='root',
-                                password='root',
-                                db='simpleCRUD')
-    except pymysql.error as e:
+        conn = sqlite3.connect("books.sqlite")
+    except sqlite3.error as e:
         print(e)
     return conn
 
